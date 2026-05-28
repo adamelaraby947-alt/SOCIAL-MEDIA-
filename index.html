@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>𝑺𝑻𝑨𝑹𝑲 𝑺𝑶𝑪𝑰𝑨𝑳</title>
+    <style>
+        /* الخلفية الأساسية سوداء سادة */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000000;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            padding-bottom: 60px;
+            position: relative;
+        }
+
+        /* 1. تأثير ستارة النيون المخلوطة (كحلي غامق وبنفسجي) عند الدخول */
+        .ambient-glow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+            mix-blend-mode: screen;
+            animation: chatIntroGlow 5s ease-in-out forwards;
+        }
+
+        @keyframes chatIntroGlow {
+            0% {
+                background: radial-gradient(circle at 30% -20%, rgba(0, 40, 150, 0.7), transparent 60%),
+                            radial-gradient(circle at 70% -20%, rgba(180, 0, 255, 0.7), transparent 60%);
+                opacity: 0;
+            }
+            20%, 75% {
+                background: radial-gradient(circle at 25% -10%, rgba(0, 60, 200, 0.8), transparent 65%),
+                            radial-gradient(circle at 75% -10%, rgba(200, 0, 255, 0.8), transparent 65%);
+                opacity: 1;
+            }
+            100% {
+                background: transparent;
+                opacity: 0;
+            }
+        }
+
+        /* 2. تأثير النيون التبادلي من الجوانب (كحلي غامق وبنفسجي يعكس كل 3 ثواني) */
+        .neon-pulse-left, .neon-pulse-right {
+            position: fixed;
+            width: 400px;
+            height: 600px;
+            border-radius: 50%;
+            filter: blur(120px);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .neon-pulse-left {
+            top: 20%;
+            left: -200px;
+            animation: pulseLeftMove 6s infinite ease-in-out;
+        }
+
+        .neon-pulse-right {
+            top: 20%;
+            right: -200px;
+            animation: pulseRightMove 6s infinite ease-in-out;
+        }
+
+        /* أنميشن الحركة والتبادل باللون الكحلي الغامق والبنفسجي */
+        @keyframes pulseRightMove {
+            0%, 100% {
+                transform: translateX(-50px) scale(1.2);
+                background: radial-gradient(circle, rgba(0, 50, 180, 0.8) 0%, transparent 70%);
+                opacity: 1;
+            }
+            50% {
+                transform: translateX(50px) scale(0.9);
+                background: radial-gradient(circle, rgba(180, 0, 255, 0.4) 0%, transparent 70%);
+                opacity: 0.4;
+            }
+        }
+
+        @keyframes pulseLeftMove {
+            0%, 100% {
+                transform: translateX(-50px) scale(0.9);
+                background: radial-gradient(circle, rgba(0, 50, 180, 0.4) 0%, transparent 70%);
+                opacity: 0.4;
+            }
+            50% {
+                transform: translateX(50px) scale(1.2);
+                background: radial-gradient(circle, rgba(180, 0, 255, 0.8) 0%, transparent 70%);
+                opacity: 1;
+            }
+        }
+
+        /* حاوية المحتوى الرئيسي */
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 800px;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+            z-index: 10;
+            margin-top: 12vh;
+        }
+
+        /* ستايل النيون الأزرق المبهج للكلام البارز */
+        .neon-blue-text {
+            color: #00d4ff;
+            text-shadow: 0 0 8px #00d4ff, 0 0 20px #006eff, 0 0 30px #006eff;
+        }
+
+        /* ستايل النيون البنفسجي لجملة الترحيب */
+        .neon-purple-text {
+            color: #df40ff;
+            text-shadow: 0 0 8px #df40ff, 0 0 20px #b000e6, 0 0 30px #b000e6;
+        }
+
+        /* جملة الترحيب */
+        .welcome-text {
+            font-size: 2.2rem;
+            font-weight: bold;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: introWelcome 3s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+            animation-delay: 0.8s;
+        }
+
+        @keyframes introWelcome {
+            0% { opacity: 0; transform: translateY(30px); }
+            50% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 1; transform: translateY(-4vh) scale(0.85); }
+        }
+
+        /* الأقسام المخفية تظهر بعد الدخلة */
+        .content-section {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .show-content {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            margin-top: 25px;
+        }
+
+        /* المربع النيوني المحيط بالصور */
+        .neon-card {
+            display: inline-block;
+            border-radius: 12px;
+            padding: 4px;
+            background: #000000;
+            border: 2px solid #00d4ff;
+            box-shadow: 0 0 12px rgba(0, 212, 255, 0.4);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            overflow: hidden;
+            line-height: 0;
+        }
+
+        .neon-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px #006eff, 0 0 35px #00d4ff;
+        }
+
+        /* مقاس صورة الاستور الرسمي */
+        .store-image {
+            width: 180px;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        /* توزيعة القنوات (2 جمب بعض و 1 تحتهم في النص بالظبط) وتوزيعة السوشيال ميديا */
+        .channels-flex-container, .social-flex-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        .channels-row-top, .social-row {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            gap: 15px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .social-row {
+            margin-bottom: 10px;
+        }
+
+        .channel-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            max-width: 160px;
+        }
+
+        .channels-row-bottom {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .channel-label {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            width: 100%;
+        }
+
+        .channel-image {
+            width: 125px;
+            height: 125px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        /* الشاشات الكبيرة */
+        @media (min-width: 600px) {
+            .channels-row-top, .social-row { max-width: 500px; gap: 40px; }
+            .channel-item { max-width: 200px; }
+            .channel-image { width: 150px; height: 150px; }
+            .channel-label { font-size: 1.1rem; }
+            .store-image { width: 220px; height: 220px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ستارة الدخلة بالكحلي الغامق والبنفسجي -->
+    <div class="ambient-glow"></div>
+
+    <!-- تأثير ومضات النيون المتحركة التبادلية من الجوانب (كحلي وبنفسجي) -->
+    <div class="neon-pulse-left"></div>
+    <div class="neon-pulse-right"></div>
+
+    <div class="main-container">
+        <!-- جملة الترحيب بالاسم الجديد الفخم واللون البنفسجي النيوني -->
+        <div class="welcome-text neon-purple-text" id="welcomeText">𝑾𝑬𝑳𝑪𝑶𝑴𝑬 𝑻𝑶 𝑺𝑻𝑨𝑹𝑲 𝑺𝑶𝑪𝑰𝑨𝑳</div>
+
+        <!-- قسم الاستور الرسمي -->
+        <div class="content-section" id="storeSection">
+            <h2 class="section-title neon-blue-text">الاستور الرسمي</h2>
+            
+            <a href="https://t.me/X4_STORE_x4" target="_blank" rel="noopener noreferrer">
+                <div class="neon-card">
+                    <img src="https://i.postimg.cc/DzCM7bmm/file-0000000016b071f597995dd2819cf00c-2.jpg" alt="X4 Store" class="store-image">
+                </div>
+            </a>
+        </div>
+
+        <!-- قسم القنوات المتمركز تماماً في نص الشاشة -->
+        <div class="content-section" id="channelsSection">
+            <h2 class="section-title neon-blue-text">جميع قنواتنا على تليجرام</h2>
+            
+            <div class="channels-flex-container">
+                <!-- الصف العلوي -->
+                <div class="channels-row-top">
+                    
+                    <!-- المربع الأول: قناة دينية (إلى الله) - تم إصلاح الرابط هنا -->
+                    <div class="channel-item">
+                        <span class="channel-label neon-blue-text">قناة دينية (إلى الله)</span>
+                        <a href="https://t.me/to_god_2" target="_blank" rel="noopener noreferrer">
+                            <div class="neon-card">
+                                <img src="https://i.postimg.cc/63vDWLSY/IMG-20260528-164052-552.jpg" alt="قناة دينية" class="channel-image">
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- المربع الثاني: قناة ملفات الاسكنات (القناه الاساسيه) -->
+                    <div class="channel-item">
+                        <span class="channel-label neon-blue-text">قناه ملفات الاسكنات<br>(القناه الاساسيه)</span>
+                        <a href="https://t.me/X4_STARK_FILES" target="_blank" rel="noopener noreferrer">
+                            <div class="neon-card">
+                                <img src="https://i.postimg.cc/QdyJdLcT/file-00000000384071f7978944b78b74b707-2.jpg" alt="قناة الاسكنات" class="channel-image">
+                            </div>
+                        </a>
+                    </div>
+
+                </div>
+
+                <!-- الصف السفلي -->
+                <div class="channels-row-bottom">
+                    <div class="channel-item">
+                        <span class="channel-label neon-blue-text">قناه الثقه</span>
+                        <a href="https://t.me/x4STARKx4" target="_blank" rel="noopener noreferrer">
+                            <div class="neon-card">
+                                <img src="https://i.postimg.cc/m23nkrrv/file-00000000ddd471f78a1ebc5111db811d-2.jpg" alt="قناة الثقة" class="channel-image">
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- القسم: جميع صفحاتنا على SOCIAL MEDIA -->
+        <div class="content-section" id="socialSection">
+            <h2 class="section-title neon-blue-text">جميع صفحاتنا على 𝑺𝑶𝑪𝑰𝑨𝑳 𝑴𝑬𝑫𝑰𝑨</h2>
+            
+            <div class="social-flex-container">
+                <!-- الصف الأول: يوتيوب وتيك توك -->
+                <div class="social-row">
+                    
+                    <!-- المربع الأول: يوتيوب -->
+                    <div class="channel-item">
+                        <span class="channel-label neon-blue-text">قناة يوتيوب</span>
+                        <a href="https://youtube.com/@s_tar_k?si=EwrfQj3oKHGa6ubq" target="_blank" rel="noopener noreferrer">
+                            <div class="neon-card">
+                                <img src="https://i.postimg.cc/QdyJdLcT/file-00000000384071f7978944b78b74b707-2.jpg" alt="يوتيوب" class="channel-image">
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- المربع الثاني: تيك توك - تم إصلاح الرابط هنا لقراءة tiktok بشكل صحيح -->
+                    <div class="channel-item">
+                        <span class="channel-label neon-blue-text">تيك توك</span>
+                        <a href="https://www.tiktok.com/@stark.gamer.1?_r=1&_t=ZS-96jyauRbtNR" target="_blank" rel="noopener noreferrer">
+                            <div class="neon-card">
+                                <img src="https://i.postimg.cc/QdyJdLcT/file-00000000384071f7978944b78b74b707-2.jpg" alt="تيك توك" class="channel-image">
+                            </div>
+                        </a>
+                    </div>
+
+                </div>
+
+                <!-- الصف الثاني: فيسبوك وانستجرام -->
+                <div class="social-row">
+                    
+                    <!-- المربع الثالث: فيسبوك -->
+                    <div class="channel-item">
+                        <span class="channel-label neon-blue-text">فيسبوك</span>
+                        <a href="https://www.facebook.com/share/1Dzu58tVGt/" target="_blank" rel="noopener noreferrer">
+                            <div class="neon-card">
+                                <img src="https://i.postimg.cc/QdyJdLcT/file-00000000384071f7978944b78b74b707-2.jpg" alt="فيسبوك" class="channel-image">
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- المربع الرابع: انستجرام -->
+                    <div class="channel-item">
+                        <span class="channel-label neon-blue-text">انستجرام</span>
+                        <a href="https://www.instagram.com/starkgamerofficial?igsh=cjVucTJmYjFidzRw" target="_blank" rel="noopener noreferrer">
+                            <div class="neon-card">
+                                <img src="https://i.postimg.cc/QdyJdLcT/file-00000000384071f7978944b78b74b707-2.jpg" alt="انستجرام" class="channel-image">
+                            </div>
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // ظهور محتويات الموقع بسلاسة بعد انتهاء الدخلة
+        setTimeout(() => {
+            document.getElementById('storeSection').classList.add('show-content');
+        }, 4200);
+
+        setTimeout(() => {
+            document.getElementById('channelsSection').classList.add('show-content');
+        }, 4600);
+
+        // ظهور قسم السوشيال ميديا بعد ظهور قسم القنوات مباشرة
+        setTimeout(() => {
+            document.getElementById('socialSection').classList.add('show-content');
+        }, 5000);
+    </script>
+</body>
+</html>
